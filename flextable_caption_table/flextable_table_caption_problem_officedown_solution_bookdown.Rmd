@@ -1,0 +1,77 @@
+---
+title: 'Example of table caption problem using knitr::opts_chunk$set()'
+output: 
+  officedown::rdocx_document:
+    base_format: bookdown::word_document2
+    reference_docx: template-bookdown.docx
+---
+
+```{r}
+# This version uses "output: officedown::rdocx_document" in YAML
+
+```
+
+
+```{r options, include=TRUE, echo=TRUE}
+
+# if (!require("pacman")) install.packages("pacman") # install it if not already there
+
+pacman::p_load(knitr, officedown, flextable, magrittr, data.table)
+
+## define options for chunks including those with flextables
+knitr::opts_chunk$set(
+  echo = FALSE
+)
+
+```
+
+
+# Section 1
+
+```{r}
+ft <- flextable(head(airquality))
+
+table_caption <- 'airquality dataset'
+
+```
+
+The caption table should have prefix and automunering in correct format: `Table 1 : airquality dataset`. 
+
+But it is not the case since updating from 0.7.3 to 0.8.2 of `flextable`.
+
+
+```{r first_table, tab.cap = table_caption}
+ft
+```
+
+
+\newpage
+
+
+## Styles of template.docx
+```{r}
+
+x <- here::here('template.docx') %>%
+  officer::read_docx() %>% 
+  officer::styles_info() %>%
+  data.table::setDT() 
+
+
+x[style_id %like% 'Caption',]
+```
+
+
+
+## session info
+
+```{r}
+sessionInfo()
+
+```
+
+
+
+```{r}
+
+```
+
